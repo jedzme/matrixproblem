@@ -39,7 +39,6 @@ public class Main {
 		if (height > 0 && width > 0) {
 			int[][] matrix = matrixGen.generate(height, width, minNum, maxNum);
 
-			System.out.println(height + "  " + width);
 			List<Integer> longestPath = sol.getLongestPath(matrix);
 			System.out.println("Length of calculated path: " + longestPath.size());
 			System.out.println(
@@ -48,6 +47,7 @@ public class Main {
 			
 			System.out.println(" ");
 			System.out.println("=======Matrix========");
+			System.out.println(height + "  " + width);
 			for (int row = 0; row < height; row++) {
 				for (int column = 0; column < width; column++) {
 					System.out.print(matrix[row][column]);
