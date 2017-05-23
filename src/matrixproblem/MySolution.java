@@ -12,90 +12,87 @@ public class MySolution {
 
 	private Map<Integer, List<Integer>> cache = new HashMap<>();
 
-	public List<Integer> getLongestPath(int[][] matrix){
+	public List<Integer> getLongestPath(int[][] matrix) {
 		List<Integer> longestPath = new ArrayList<>();
-		
-		this.matrix = matrix;
-        this.height = matrix.length;
-        this.width = matrix[0].length;
-        
-        // Catch, 2D -> 1D: row * width + col; 1D -> 2D: x = 1D / width, y = 1D % width.
-        this.visited = new boolean[width * height];
 
-        List<Integer> tempList = new ArrayList<>();
-        for (int i = 0; i < width * height; i++) {
-            // Run depth-first search on every element in the matrix.
-        	tempList = getMatrixValues(performDFS(i));
-        	
-        	if(tempList.size() > longestPath.size()){
-        		longestPath = tempList;
-        	}
-        	else if(tempList.size() == longestPath.size()){
-        		int tempListSteepness = tempList.get(0) - tempList.get(tempList.size() - 1);
-        		int longestPathSteepness = longestPath.get(0) - longestPath.get(longestPath.size() - 1);
-        		//compare difference of first and last element for steepest
-        		if( tempListSteepness > longestPathSteepness){
-        			longestPath = tempList;
-        		}
-        		else if(tempListSteepness == longestPathSteepness){
-        			//TODO:
-        		}       			
-        			
-        	}
-            
-        }
-        
-        return longestPath;
+		this.matrix = matrix;
+		this.height = matrix.length;
+		this.width = matrix[0].length;
+
+		// Catch, 2D -> 1D: row * width + col; 1D -> 2D: x = 1D / width, y = 1D
+		// % width.
+		this.visited = new boolean[width * height];
+
+		List<Integer> tempList = new ArrayList<>();
+		for (int i = 0; i < width * height; i++) {
+			// Run depth-first search on every element in the matrix.
+			tempList = getMatrixValues(performDFS(i));
+
+			if (tempList.size() > longestPath.size()) {
+				longestPath = tempList;
+			} else if (tempList.size() == longestPath.size()) {
+				int tempListSteepness = tempList.get(0) - tempList.get(tempList.size() - 1);
+				int longestPathSteepness = longestPath.get(0) - longestPath.get(longestPath.size() - 1);
+				// compare difference of first and last element for steepest
+				if (tempListSteepness > longestPathSteepness) {
+					longestPath = tempList;
+				} else if (tempListSteepness == longestPathSteepness) {
+					// TODO:
+				}
+
+			}
+
+		}
+
+		return longestPath;
 	}
-	
-	private List<Integer> getMatrixValues(List<Integer> vertices){
+
+	private List<Integer> getMatrixValues(List<Integer> vertices) {
 		List<Integer> values = new ArrayList<>();
-		
-		for(int n : vertices){
+
+		for (int n : vertices) {
 			int row = n / width;
 			int col = n % width;
-			values.add(matrix[row][col]); 
+			values.add(matrix[row][col]);
 		}
 		return values;
 	}
-	
-	
-	private List<Integer> performDFS(int index){
+
+	private List<Integer> performDFS(int index) {
 		List<Integer> sequence = new ArrayList<>();
 		List<Integer> tempList = new ArrayList<>();
 		List<Integer> currentNeighborSequence = new ArrayList<>();
-		
+
 		int maxPathOfNeighbor = 0;
-		
-		if(!visited[index]){
+
+		if (!visited[index]) {
 			sequence.add(index);
-			//mark the index as visited
+			// mark the index as visited
 			visited[index] = true;
-			
-			//perform recursive dfs on all neighbors with lesser values
-			for(int n: getLesserValueNeighbors(index)){
+
+			// perform recursive dfs on all neighbors with lesser values
+			for (int n : getLesserValueNeighbors(index)) {
 				currentNeighborSequence = performDFS(n);
-				if(maxPathOfNeighbor < currentNeighborSequence.size()){
+				if (maxPathOfNeighbor < currentNeighborSequence.size()) {
 					maxPathOfNeighbor = currentNeighborSequence.size();
 					tempList = currentNeighborSequence;
+				} else if (maxPathOfNeighbor == currentNeighborSequence.size()) {
+					// TODO:
 				}
-				else if(maxPathOfNeighbor == currentNeighborSequence.size()){
-					//TODO:
-				}
-						
+
 			}
 			sequence.addAll(tempList);
-		}
-		else{
+		} else {
 			return cache.get(index);
 		}
-		
+
 		cache.put(index, sequence);
-		
+
 		return sequence;
 	}
 
-	// Check adjacent (up, down, left, right) lesser value vertices and return them 
+	// Check adjacent (up, down, left, right) lesser value vertices and return
+	// them
 	private List<Integer> getLesserValueNeighbors(int i) {
 		List<Integer> neighbors = new ArrayList<>();
 		// Convert 1D array to 2D array
