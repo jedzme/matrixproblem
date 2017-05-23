@@ -18,9 +18,8 @@ public class Main {
 
 	public static void main(String args[]) {
 		// For testing
-		// int[][] matrix = myArr2;//matrixGen.generate(height, width, minNum,
-		// maxNum);
-
+		// int[][] matrix = myArr2;
+		
 		MySolution sol = new MySolution();
 		MatrixDataGenerator matrixGen = new MatrixDataGenerator();
 
