@@ -33,11 +33,13 @@ public class MySolution {
 			} else if (tempList.size() == longestPath.size()) {
 				int tempListSteepness = tempList.get(0) - tempList.get(tempList.size() - 1);
 				int longestPathSteepness = longestPath.get(0) - longestPath.get(longestPath.size() - 1);
+
 				// compare difference of first and last element for steepest
 				if (tempListSteepness > longestPathSteepness) {
 					longestPath = tempList;
 				} else if (tempListSteepness == longestPathSteepness) {
-					// TODO:
+					// TODO: This will require to change data type of
+					// getLongestPath to List of List
 				}
 
 			}
@@ -51,11 +53,19 @@ public class MySolution {
 		List<Integer> values = new ArrayList<>();
 
 		for (int n : vertices) {
-			int row = n / width;
-			int col = n % width;
-			values.add(matrix[row][col]);
+			values.add(getMatrixValue(n));
 		}
 		return values;
+	}
+
+	private int getMatrixValue(int index) {
+		int row = index / width;
+		int column = index % width;
+		int value = 0;
+		if (isInTheGrid(row, column)) {
+			value = matrix[row][column];
+		}
+		return value;
 	}
 
 	private List<Integer> performDFS(int index) {
@@ -69,15 +79,29 @@ public class MySolution {
 			sequence.add(index);
 			// mark the index as visited
 			visited[index] = true;
-
 			// perform recursive dfs on all neighbors with lesser values
 			for (int n : getLesserValueNeighbors(index)) {
+
 				currentNeighborSequence = performDFS(n);
+
 				if (maxPathOfNeighbor < currentNeighborSequence.size()) {
 					maxPathOfNeighbor = currentNeighborSequence.size();
 					tempList = currentNeighborSequence;
 				} else if (maxPathOfNeighbor == currentNeighborSequence.size()) {
-					// TODO:
+					int tempListSize = tempList.size();
+					int currentNeighborSequenceSize = currentNeighborSequence.size();
+
+					int tempListLastIndexValue = getMatrixValue(tempList.get(tempListSize - 1));
+					int currentNeighSeqLastIndxVal = getMatrixValue(
+							currentNeighborSequence.get(currentNeighborSequenceSize - 1));
+
+					if (tempListSize > 0 && currentNeighborSequenceSize > 0) {
+						// compare value of last element for steeper path
+						if (currentNeighSeqLastIndxVal < tempListLastIndexValue) {
+							tempList = currentNeighborSequence;
+						}
+					}
+
 				}
 
 			}
@@ -91,8 +115,8 @@ public class MySolution {
 		return sequence;
 	}
 
-	// Check adjacent (up, down, left, right) lesser value vertices and return
-	// them
+	// Check adjacent (sequence checking: top & left then bottom & right) lesser
+	// value vertices and return them
 	private List<Integer> getLesserValueNeighbors(int i) {
 		List<Integer> neighbors = new ArrayList<>();
 		// Convert 1D array to 2D array
@@ -101,9 +125,11 @@ public class MySolution {
 		for (int j = -1; j <= 1; j++) {
 			if (j == 0)
 				continue;
+			// check top and bottom
 			if (isInTheGrid(row + j, column) && matrix[row + j][column] < matrix[row][column]) {
 				neighbors.add((row + j) * width + column);
 			}
+			// check left and right
 			if (isInTheGrid(row, column + j) && matrix[row][column + j] < matrix[row][column]) {
 				neighbors.add(row * width + column + j);
 			}
